@@ -4,8 +4,9 @@ variable "aws_profile" {}
 variable "lobbyboy_whitelist" {}
 variable "lobbyboy_users" {}
 variable "lobbyboy_secrets" {}
-variable "lobbyboy_default" {}
 variable "lobbyboy_accept_digit" {}
+variable "lobbyboy_greeting" {}
+variable "lobbyboy_voice" {}
 
 variable "lobbyboy_twilio_sid" {}
 variable "lobbyboy_twilio_secret" {}

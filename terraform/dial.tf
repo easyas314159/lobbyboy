@@ -77,7 +77,6 @@ resource "aws_lambda_function" "dial" {
       whitelist                = "${var.lobbyboy_whitelist}"
       users                    = "${var.lobbyboy_users}"
       secrets                  = "${var.lobbyboy_secrets}"
-      default                  = "${var.lobbyboy_default}"
       acceptDigit              = "${var.lobbyboy_accept_digit}"
     }
   }

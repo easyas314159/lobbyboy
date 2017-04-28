@@ -76,9 +76,8 @@ resource "aws_lambda_function" "answer" {
       kmsEncryptedTwilioSecret = "${module.twilio_secret.encrypted}"
       whitelist                = "${var.lobbyboy_whitelist}"
       users                    = "${var.lobbyboy_users}"
-      secrets                  = "${var.lobbyboy_secrets}"
-      default                  = "${var.lobbyboy_default}"
-      acceptDigit              = "${var.lobbyboy_accept_digit}"
+      greeting                 = "${var.lobbyboy_greeting}"
+      voice                    = "${var.lobbyboy_voice}"
     }
   }
 

@@ -18,10 +18,10 @@ ENCRYPTED_TWILIO_SECRET = os.environ['kmsEncryptedTwilioSid']
 TWILIO_SID = kms.decrypt(CiphertextBlob=b64decode(ENCRYPTED_TWILIO_SID))['Plaintext']
 TWILIO_SECRET = kms.decrypt(CiphertextBlob=b64decode(ENCRYPTED_TWILIO_SECRET))['Plaintext']
 
-whitelist = os.environ['whitelist'].split(',')
-users = os.environ['users'].split(',')
-secrets = os.environ['secrets'].split(',')
-accept_digit = os.environ['acceptDigit']
+WHITELIST = os.environ['whitelist']
+GREETING = os.environ.get('greeting', None)
+USERS = os.environ['users']
+VOICE = os.environ['voice']
 
 def lambda_handler(event, context):
 	log.info(event)

@@ -22,6 +22,7 @@ whitelist = os.environ['whitelist'].split(',')
 users = os.environ['users'].split(',')
 secrets = os.environ['secrets'].split(',')
 accept_digit = os.environ['acceptDigit']
+voice = "${var.lobbyboy_voice}"
 
 def lambda_handler(event, context):
 	log.info(event)
