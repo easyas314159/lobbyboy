@@ -33,9 +33,24 @@ def lambda_handler(event, context):
 	# TODO: Make sure this request came from Twilio
 
 	response = et.Element('Response')
-	say = et.SubElement(response, 'Say')
-	say.text = "Get your hands off my lobby boy!"
-	say.set('voice', 'man')
+	gather = et.SubElement(response, 'Gather')
+	gather.set('method', 'POST')
+	gather.set('action', '')
+
+	if GREETING:
+		say = et.SubElement(gather, 'Say')
+		say.set('voice', VOICE)
+		say.text = GREETING
+
+	index = 1
+	for name in USERS.split(','):
+		name = name.split('@')[0]
+
+		say = et.SubElement(gather, 'Say')
+		say.set('voice', VOICE)
+		say.text = 'for %s, press, %s, ' % (name, index)
+
+		index += 1
 
 	proxy = {
 		'statusCode': '200',
