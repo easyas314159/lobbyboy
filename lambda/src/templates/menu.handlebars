@@ -1,0 +1,11 @@
+{{#if users}}
+	{{#if delivery}}
+		If you are making a delivery press 0.
+	{{/if}}
+
+	{{#each users}}
+		For {{name}} press {{code}}.
+	{{/each}}
+{{else}}
+	No users have been configured.
+{{/if}}

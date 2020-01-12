@@ -1,0 +1,33 @@
+{
+	"extends": [
+		"google"
+	],
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module"
+	},
+	"env": {
+		"es6": true,
+		"node": true,
+		"mocha": true
+	},
+	"rules": {
+		"require-jsdoc": "warn",
+		"no-console": "warn",
+		"no-unused-vars": "warn",
+		"no-unreachable": "warn",
+		"no-extra-semi": "warn",
+		"indent": ["error", "tab"],
+		"no-tabs": ["error", {"allowIndentationTabs": true}],
+		"linebreak-style": [0],
+		"max-len": "warn",
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"complexity": [
+			"error",
+			{
+				"max": 10
+			}
+		]
+	}
+}

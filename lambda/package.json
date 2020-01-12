@@ -1,0 +1,34 @@
+{
+  "name": "lobbyboy",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint": "eslint src --fix",
+    "test": "npm run lint",
+    "build-dev": "npm run prepare && cross-env NODE_ENV=development webpack --config webpack.config.js",
+    "build-prod": "npm run prepare && cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "prepare": "mkdir -p build && rm -rf build/*"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-external-helpers": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@hapi/boom": "^8.0.1",
+    "aws-sdk": "^2.582.0",
+    "babel-loader": "^8.0.6",
+    "cross-env": "^6.0.3",
+    "eslint": "^6.7.2",
+    "eslint-config-google": "^0.14.0",
+    "handlebars": "^4.5.3",
+    "handlebars-loader": "^1.7.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "twilio": "^3.37.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2",
+    "zip-webpack-plugin": "^3.0.0"
+  }
+}
