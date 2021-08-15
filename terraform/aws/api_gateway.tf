@@ -36,6 +36,10 @@ resource "aws_api_gateway_method" "this" {
   resource_id   = aws_api_gateway_resource.this.id
   http_method   = "POST"
   authorization = "NONE"
+
+  request_parameters = {
+    "method.request.header.X-Twilio-Signature" = true
+  }
 }
 
 resource "aws_api_gateway_method_response" "this" {
