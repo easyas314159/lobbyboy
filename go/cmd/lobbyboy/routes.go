@@ -31,8 +31,8 @@ func (env *Environment) createRouter() *mux.Router {
 			return handlers.CompressHandlerLevel(next, 7)
 		},
 		handlers.RecoveryHandler(),
-		env.twilioVoiceRequest,
 		env.twilioValidation,
+		env.twilioVoiceRequest,
 	)
 
 	r.Path("/menu").Methods("POST").HandlerFunc(env.handleMenu)
