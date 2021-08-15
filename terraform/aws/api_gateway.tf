@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "this" {
-  name = "lobbyboy"
+  name = var.name
 }
 
 resource "aws_api_gateway_deployment" "live" {

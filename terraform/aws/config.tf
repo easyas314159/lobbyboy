@@ -1,5 +1,5 @@
 resource "aws_appconfig_application" "this" {
-  name        = "lobbyboy"
+  name        = var.name
   description = "Lobby Boy"
 }
 

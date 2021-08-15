@@ -12,7 +12,7 @@ resource "aws_lambda_permission" "this" {
 
 resource "aws_lambda_function" "this" {
   filename         = module.binary.archive_path
-  function_name    = "lobbyboy"
+  function_name    = var.name
   role             = aws_iam_role.this.arn
   runtime          = "go1.x"
   handler          = basename(module.binary.binary_path)
@@ -21,7 +21,7 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      AWS_APPCONFIG_CLIENT_ID     = "lobbyboy"
+      AWS_APPCONFIG_CLIENT_ID     = var.name
       AWS_APPCONFIG_APPLICATION   = aws_appconfig_application.this.name
       AWS_APPCONFIG_ENVIRONMENT   = aws_appconfig_environment.this.name
       AWS_APPCONFIG_CONFIGURATION = aws_appconfig_configuration_profile.this.name

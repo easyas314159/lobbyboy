@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "appconfig" {
 }
 
 resource "aws_iam_role" "this" {
-  name               = "lobbyboy"
+  name               = var.name
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
