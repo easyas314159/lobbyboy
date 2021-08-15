@@ -25,7 +25,7 @@ resource "aws_appconfig_hosted_configuration_version" "current" {
   configuration_profile_id = aws_appconfig_configuration_profile.this.configuration_profile_id
   content_type             = "application/json"
 
-  content = file(var.config_file)
+  content = jsonencode(jsondecode(file(var.config_file)))
 }
 
 resource "aws_appconfig_deployment" "this" {
