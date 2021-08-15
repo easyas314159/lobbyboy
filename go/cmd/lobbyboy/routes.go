@@ -18,6 +18,7 @@ type contextKey string
 
 const (
 	keyTwilioVoiceRequest contextKey = "twilioVoiceRequest"
+	keyTwilioResponse     contextKey = "twilioVoiceResponse"
 )
 
 func (env *Environment) createRouter() *mux.Router {
@@ -33,6 +34,8 @@ func (env *Environment) createRouter() *mux.Router {
 		handlers.RecoveryHandler(),
 		env.twilioValidation,
 		env.twilioVoiceRequest,
+		env.twilioVoiceResponse,
+		env.twilioAllowList,
 	)
 
 	r.Path("/menu").Methods("POST").HandlerFunc(env.handleMenu)
@@ -90,32 +93,57 @@ func (env *Environment) twilioVoiceRequest(next http.Handler) http.Handler {
 	})
 }
 
+func (env *Environment) twilioVoiceResponse(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		res := twiml.NewResponse()
+
+		ctx := context.WithValue(r.Context(), keyTwilioResponse, res)
+		next.ServeHTTP(w, r.WithContext(ctx))
+
+		b, err := res.Encode()
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		if _, err := w.Write(b); err != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/xml")
+	})
+}
+
+func (env *Environment) twilioAllowList(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if env.Config.IsSet("twilio.allow") {
+			req, _ := r.Context().Value(keyTwilioVoiceRequest).(twiml.VoiceRequest)
+
+			for _, value := range env.Config.GetStringSlice("twilio.allow") {
+				if req.From == value {
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+
+			log.Printf("%s is not an allowed incoming number.\n", req.From)
+
+			res, _ := r.Context().Value(keyTwilioResponse).(*twiml.Response)
+			res.Add(&twiml.Hangup{})
+
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func (env *Environment) handleMenu(w http.ResponseWriter, r *http.Request) {
-
-	res := twiml.NewResponse()
-
-	ctx := r.Context()
-	vr, _ := ctx.Value(keyTwilioVoiceRequest).(twiml.VoiceRequest)
+	res, _ := r.Context().Value(keyTwilioResponse).(*twiml.Response)
 
 	say := env.say("Test")
 	res.Add(&say)
-
-	log.Printf("Incoming call from %s\n", vr.From)
-	// TODO: {KL} Check incoming call against allowed list
-
-	b, err := res.Encode()
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
-	if _, err := w.Write(b); err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/xml")
-	w.WriteHeader(http.StatusOK)
 }
