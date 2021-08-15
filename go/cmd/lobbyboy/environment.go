@@ -18,7 +18,7 @@ func NewEnvironment(cfg *viper.Viper) (*Environment, error) {
 func (env *Environment) say(text string) twiml.Say {
 	return twiml.Say{
 		Text:     text,
-		Voice:    env.Config.GetString("voice"),
-		Language: env.Config.GetString("language"),
+		Voice:    env.Config.GetString("twilio.voice"),
+		Language: env.Config.GetString("twilio.language"),
 	}
 }

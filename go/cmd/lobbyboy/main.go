@@ -36,8 +36,10 @@ func main() {
 }
 
 func populateConfigDefaults(v *viper.Viper) {
-	v.SetDefault("language", "en")
-	v.SetDefault("voice", "man")
+	v.SetDefault("twilio", map[string]interface{}{
+		"language": "en",
+		"voice":    "man",
+	})
 
 	populateConfigOperationModeDefaults(v)
 }
