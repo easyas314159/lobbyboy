@@ -48,15 +48,15 @@ func (env *Environment) createRouter() *mux.Router {
 
 func (env *Environment) twilioValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			log.Printf("Failed to parse form: %v\n", err)
+			return
+		}
+
 		if env.Config.IsSet("twilio.secret") {
 			twilioSecret := env.Config.GetString("twilio.secret")
-
-			err := r.ParseForm()
-			if err != nil {
-				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-				log.Printf("Failed to parse form: %v\n", err)
-				return
-			}
 
 			url := r.URL.String()
 			apiGatewayContext, exists := core.GetAPIGatewayContextFromContext(r.Context())
