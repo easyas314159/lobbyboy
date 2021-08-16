@@ -36,7 +36,7 @@ func (env *Environment) createRouter() *mux.Router {
 		env.twilioAllowList,
 	)
 
-	r.Path("/menu").Methods("POST").HandlerFunc(env.handleMenu)
+	r.Path("/").Methods("POST").HandlerFunc(env.twilioHandler)
 
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	r.MethodNotAllowedHandler = http.HandlerFunc(methodNotAllowed)
@@ -130,7 +130,7 @@ func (env *Environment) twilioAllowList(next http.Handler) http.Handler {
 	})
 }
 
-func (env *Environment) handleMenu(w http.ResponseWriter, r *http.Request) {
+func (env *Environment) twilioHandler(w http.ResponseWriter, r *http.Request) {
 	res, _ := r.Context().Value(keyTwilioResponse).(*twiml.Response)
 
 	say := env.say("Test")
