@@ -1,5 +1,5 @@
 {
-	"$id": "https://easyas314159.github.io/lobbyboy/schema/config.json"
+	"$id": "https://easyas314159.github.io/lobbyboy/schema/config.json",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 	"type": "object",
 	"properties": {
