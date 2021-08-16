@@ -16,7 +16,7 @@ resource "aws_appconfig_configuration_profile" "this" {
 
   validator {
     type    = "JSON_SCHEMA"
-    content = file(var.config_schema)
+    content = jsonencode(jsondecode(file(var.config_schema)))
   }
 }
 
