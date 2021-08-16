@@ -119,17 +119,21 @@ func (env *Environment) twilioVoiceResponse(next http.Handler) http.Handler {
 
 func (env *Environment) twilioAllowList(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if env.Config.IsSet("twilio.allow") {
-			req, _ := r.Context().Value(keyTwilioVoiceRequest).(twiml.VoiceRequest)
+		if env.Allowed != nil {
+			from, ok := r.PostForm["From"]
+			if !ok || len(from) != 1 {
+				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+				return
+			}
 
-			for _, value := range env.Config.GetStringSlice("twilio.allow") {
-				if req.From == value {
+			for _, value := range env.Allowed {
+				if from[0] == value {
 					next.ServeHTTP(w, r)
 					return
 				}
 			}
 
-			log.Printf("%s is not an allowed incoming number.\n", req.From)
+			log.Printf("%s is not an allowed incoming number.\n", from[0])
 
 			res, _ := r.Context().Value(keyTwilioResponse).(*twiml.Response)
 			res.Add(&twiml.Hangup{})
