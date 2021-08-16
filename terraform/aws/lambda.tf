@@ -27,4 +27,8 @@ resource "aws_lambda_function" "this" {
       AWS_APPCONFIG_CONFIGURATION = aws_appconfig_configuration_profile.this.name
     }
   }
+
+  depends_on = [
+    aws_cloudwatch_log_group.lambda
+  ]
 }

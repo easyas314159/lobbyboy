@@ -1,10 +1,24 @@
+locals {
+  common_log_format = {
+    "requestId"      = "$context.requestId"
+    "ip"             = "$context.identity.sourceIp"
+    "caller"         = "$context.identity.caller"
+    "user"           = "$context.identity.user"
+    "requestTime"    = "$context.requestTime"
+    "httpMethod"     = "$context.httpMethod"
+    "resourcePath"   = "$context.resourcePath"
+    "status"         = "$context.status"
+    "protocol"       = "$context.protocol"
+    "responseLength" = "$context.responseLength"
+  }
+}
+
 resource "aws_api_gateway_rest_api" "this" {
   name = var.name
 }
 
-resource "aws_api_gateway_deployment" "live" {
+resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = aws_appconfig_environment.this.name
 
   depends_on = [
     aws_api_gateway_method.this,
@@ -12,9 +26,24 @@ resource "aws_api_gateway_deployment" "live" {
   ]
 }
 
+resource "aws_api_gateway_stage" "live" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  deployment_id = aws_api_gateway_deployment.this.id
+  stage_name    = var.stage_name
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gateway.arn
+    format          = jsonencode(local.common_log_format)
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.api_gateway
+  ]
+}
+
 resource "aws_api_gateway_method_settings" "live" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = aws_api_gateway_deployment.live.stage_name
+  stage_name  = aws_api_gateway_stage.live.stage_name
   method_path = "*/*"
 
   settings {
