@@ -17,8 +17,7 @@ import (
 type contextKey string
 
 const (
-	keyTwilioVoiceRequest contextKey = "twilioVoiceRequest"
-	keyTwilioResponse     contextKey = "twilioVoiceResponse"
+	keyTwilioResponse contextKey = "twilioVoiceResponse"
 )
 
 func (env *Environment) createRouter() *mux.Router {
@@ -33,7 +32,6 @@ func (env *Environment) createRouter() *mux.Router {
 		},
 		handlers.RecoveryHandler(),
 		env.twilioValidation,
-		env.twilioVoiceRequest,
 		env.twilioVoiceResponse,
 		env.twilioAllowList,
 	)
@@ -77,19 +75,6 @@ func (env *Environment) twilioValidation(next http.Handler) http.Handler {
 		}
 
 		next.ServeHTTP(w, r)
-	})
-}
-
-func (env *Environment) twilioVoiceRequest(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var vr twiml.VoiceRequest
-		if err := twiml.Bind(&vr, r); err != nil {
-			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), keyTwilioVoiceRequest, vr)
-		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
