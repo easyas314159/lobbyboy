@@ -10,6 +10,8 @@ import (
 type Environment struct {
 	Config    *viper.Viper
 	Directory *Directory
+
+	Allowed []string
 }
 
 func NewEnvironment(cfg *viper.Viper) (*Environment, error) {
@@ -26,9 +28,16 @@ func NewEnvironment(cfg *viper.Viper) (*Environment, error) {
 		}
 	}
 
+	var allowed []string
+	if cfg.IsSet("twilio.allow") {
+		allowed = cfg.GetStringSlice("twilio.allow")
+		allowed = d.Lookup(allowed...)
+	}
+
 	return &Environment{
 		Config:    cfg,
 		Directory: d,
+		Allowed:   allowed,
 	}, nil
 }
 
