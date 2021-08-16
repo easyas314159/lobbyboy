@@ -20,16 +20,20 @@ resource "aws_api_gateway_rest_api" "this" {
 resource "aws_api_gateway_deployment" "this" {
   rest_api_id = aws_api_gateway_rest_api.this.id
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   depends_on = [
     aws_api_gateway_method.this,
     aws_api_gateway_integration.this,
   ]
 }
 
-resource "aws_api_gateway_stage" "live" {
+resource "aws_api_gateway_stage" "this" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   deployment_id = aws_api_gateway_deployment.this.id
-  stage_name    = var.stage_name
+  stage_name    = var.name
 
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_gateway.arn
@@ -43,7 +47,7 @@ resource "aws_api_gateway_stage" "live" {
 
 resource "aws_api_gateway_method_settings" "live" {
   rest_api_id = aws_api_gateway_rest_api.this.id
-  stage_name  = aws_api_gateway_stage.live.stage_name
+  stage_name  = aws_api_gateway_stage.this.stage_name
   method_path = "*/*"
 
   settings {

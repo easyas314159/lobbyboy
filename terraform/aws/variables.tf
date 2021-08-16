@@ -10,11 +10,6 @@ variable "name" {
   default = "lobbyboy"
 }
 
-variable "stage_name" {
-  type    = string
-  default = "live"
-}
-
 variable "log_retention" {
   type    = number
   default = 90
