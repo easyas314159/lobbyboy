@@ -17,5 +17,5 @@ variable "config_file" {
 
 variable "config_schema" {
   type    = string
-  default = "../../schema/config"
+  default = "../../docs/schema/config"
 }
